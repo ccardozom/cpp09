@@ -1,0 +1,27 @@
+Bitcoin Exchange
+Este proyecto trata de recibir un archivo input.txt por consola y otro archivo data.csv que hay que leer que seria la base de datos
+
+El archivo input.txt
+Contiene en la primera linea una cabecera con date | value y 
+en las siguientes lineas las fechas con la cantidad de Bitcoin que tenia en esa fecha en cartera
+Hay que verificar cada linea que cumpla con el formato YYYY-MM-DD y el valor positivo tipo float entre 0 y 1000
+Ejemplo:
+    date | value
+    2011-01-03 | 3
+    2011-01-03 | 1.2
+    2012-05-14 | 5
+
+El archivo data.csv
+Contiene en la primera fila una cabecera con date,exchange_rate y en las siguientes lineas
+una fecha y el valor del Bitcoin para esa fecha.
+Ejemplo:
+    2009-01-02,0
+    2011-02-24,0.96
+    2012-05-14,3
+
+El programa verifica si la fecha del input existe en la base de datos, caso contrario utiliza una fecha anterior y multiplica el valor que tiene en cartera esa fecha por el valor en la fecha de la base de datos.
+El resultado debe mostrarse en pantalla en este formato
+    date | value
+    2011-01-03 | 3 => 0
+    2011-01-03 | 1.2 => 0
+    2012-05-14 | 5 => 15

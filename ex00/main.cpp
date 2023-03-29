@@ -31,8 +31,14 @@ void checkLinedb(std::string line){
 }
 
 //imprime una linea
-void printLine(const std::string line){
-    std::cout << line << std::endl;
+void printLine(t_data data, std::string value=""){
+    if (data.err != ""){
+        std::cout << data.err << std::endl;
+    }
+    else{
+        data.line = data.line + value;
+        std::cout << data.line << std::endl;
+    }
 }
 
 //verica si existen en la linea los caracteres que se pasan y contabiliza la cantidad de veces que se repiten
@@ -59,11 +65,11 @@ std::string checkLine(const std::string line){
     std::istringstream stringStream(line);
 
     if (charCount(line, '|') != 1 || charCount(line, '|', '-') != 2){
-        std::cout << "Error: bad input => " << line << std::endl;
+        //std::cout << "Error: bad input => " << line << std::endl;
         //return NULL;
     }
     else{
-        printLine(line);
+       // printLine(line);
     }
     return line;
 }
@@ -87,7 +93,7 @@ std::string bindDate(T data){
 //verifica el formato de los datos almacenados en la estructura t_data
 template<typename T>
 int checkstruct(T& data){
-std::cout << "longitud de year: " <<data.day.length() << std::endl;
+    //std::cout << "longitud de year: " <<data.day.length() << std::endl;
 
     if(data.year.length() != 4 || data.month.length() != 2 || data.day.length() != 2){
         data.err = "Error: bad input => " + data.line;
@@ -101,6 +107,15 @@ int checkstruct<t_db>(t_db database){
 
 }
 */
+
+void initData(t_data data){
+    data.year = "";
+    data.month = "";
+    data.day = "";
+    data.value = "";
+    data.err = "";
+}
+
 //carga los datos de la linea en un vector
 void loadDate(std::string line, std::vector<t_data>& Date){
     t_data data;
@@ -108,20 +123,37 @@ void loadDate(std::string line, std::vector<t_data>& Date){
     int npos = 0;
     std::vector<std::string> tokens;
     std::string token;
+    initData(data);
     data.line = line;
-    npos = line.find('|');
-    str_extract = line.substr(0,npos);
-    std::stringstream ss(str_extract);
-    std::getline(ss, data.year, '-');    //por aqui hay un fallo al cargar day esta cargando tres valores
-    std::getline(ss, data.month, '-');
-    std::getline(ss, data.day);
-    data.value = line.substr(npos+1, line.length());
-    //std::cout << "longitud de year: " <<date.year.length() << std::endl;
-    if (checkstruct<t_data>(data))
-    //std::cout << "year: " << date.year << " month: " << date.month << " day: " << date.day << " value: " << date.value << std::endl;
-        Date.push_back(data);
-    else
-        std::cout << data.err << std::endl;
+    if (!line.empty()){
+        npos = line.find('|');
+        if(npos > 0){
+            //std::cout << "line: " << line << std::endl;
+            //std::cout << "npos: " << npos << std::endl;
+            str_extract = line.substr(0,npos);
+            std::stringstream ss(str_extract);
+            std::getline(ss, data.year, '-');    //por aqui hay un fallo al cargar day esta cargando tres valores
+            std::getline(ss, data.month, '-');
+            std::getline(ss, data.day, ' ');
+            //std::cout << "Fecha completa: " << ss.str() << std::endl;
+            //std::cout << "day: " << data.day << std::endl;
+            
+            data.value = line.substr(npos+2, line.length());
+            //std::cout << "value: " << data.value << std::endl;
+            //std::cout << "longitud de value: " << data.value.length() << std::endl;
+            //std::cout << "longitud de year: " <<date.year.length() << std::endl;
+            if (checkstruct<t_data>(data))
+            //std::cout << "year: " << date.year << " month: " << date.month << " day: " << date.day << " value: " << date.value << std::endl;
+                Date.push_back(data);
+        }
+        else{
+            data.err =  "Error: bad input => " + data.line;
+            //std::cout << data.err << std::endl;
+        }
+    }
+    printLine(data);
+   // else
+     //   std::cout << data.err << std::endl;
     //std::cout << "stringDate: "<< stringDate << std::endl;
 }
 
@@ -145,7 +177,7 @@ int main(int cont, char **argv){
 
         //descartamos la primera linea
         std::getline(filename, line);
-        printLine(line);
+        //printLine(line);
 
         //analizamos las lineas del archivo de entrada
         while (std::getline(filename, line)){
