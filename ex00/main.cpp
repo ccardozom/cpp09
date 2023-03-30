@@ -2,6 +2,8 @@
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
+#include <cctype>
+#include <algorithm>
 #include <vector>
 
 typedef struct s_data{
@@ -18,6 +20,14 @@ typedef struct s_db{
     std::string value;
     std::string err;
 }t_db;
+
+void initData(t_data data){
+    data.year = "";
+    data.month = "";
+    data.day = "";
+    data.value = "";
+    data.err = "";
+}
 
 //verifica la linea de la base de datos
 void checkLinedb(std::string line){
@@ -41,39 +51,6 @@ void printLine(t_data data, std::string value=""){
     }
 }
 
-//verica si existen en la linea los caracteres que se pasan y contabiliza la cantidad de veces que se repiten
-int charCount(std::string str, const char character1,const char character2='\0'){
-    int cont = 0;
-    std::string::iterator it = str.begin();
-    while(it != str.end()){
-        if(character2){
-            if(*it == character1)
-                return cont;
-            if(*it == character2)
-                cont++;
-        }
-        else
-            if(*it == character1)
-                cont++;
-        it++;
-    }
-    return cont;
-}
-
-//verifica la linea del archivo input
-std::string checkLine(const std::string line){
-    std::istringstream stringStream(line);
-
-    if (charCount(line, '|') != 1 || charCount(line, '|', '-') != 2){
-        //std::cout << "Error: bad input => " << line << std::endl;
-        //return NULL;
-    }
-    else{
-       // printLine(line);
-    }
-    return line;
-}
-
 //verifica si se puede abrir el archivo
 void checkInputFile(const std::ifstream& input){
     if (!input.is_open()) {
@@ -81,22 +58,30 @@ void checkInputFile(const std::ifstream& input){
         exit(EXIT_FAILURE);
     }
 }
-/*
-template<typename T>
-std::string bindDate(T data){
-    std::string str;
-    std::stringstream ss;
-    ss << 
-    return str;
-}*/
+
+bool esNumerico(const std::string& cadena) {
+    return cadena.find_first_not_of("0123456789") == std::string::npos;
+}
 
 //verifica el formato de los datos almacenados en la estructura t_data
 template<typename T>
 int checkstruct(T& data){
-    //std::cout << "longitud de year: " <<data.day.length() << std::endl;
-
+    std::cout << "longitud de value: " <<data.value.length() << std::endl;
+    std::cout << "Esto es data.value: " << data.value << std::endl;
     if(data.year.length() != 4 || data.month.length() != 2 || data.day.length() != 2){
         data.err = "Error: bad input => " + data.line;
+        return false;
+    }
+    else if(!esNumerico(data.year) || !esNumerico(data.month) || !esNumerico(data.day)){
+        data.err = "Error: bad input => " + data.line;
+        return false;
+    }
+    else if(std::atoi(data.year.c_str()) < 0 || std::atoi(data.month.c_str()) < 0 || std::atoi(data.day.c_str()) < 0 || std::atoi(data.value.c_str()) < 0){
+        data.err = "Error: not a positive number.";
+        return false;
+    }
+    else if(std::atoi(data.value.c_str()) > 1000){
+        data.err = "Error: too large a number.";
         return false;
     }
     return true;
@@ -108,13 +93,6 @@ int checkstruct<t_db>(t_db database){
 }
 */
 
-void initData(t_data data){
-    data.year = "";
-    data.month = "";
-    data.day = "";
-    data.value = "";
-    data.err = "";
-}
 
 //carga los datos de la linea en un vector
 void loadDate(std::string line, std::vector<t_data>& Date){
@@ -137,8 +115,16 @@ void loadDate(std::string line, std::vector<t_data>& Date){
             std::getline(ss, data.day, ' ');
             //std::cout << "Fecha completa: " << ss.str() << std::endl;
             //std::cout << "day: " << data.day << std::endl;
-            
-            data.value = line.substr(npos+2, line.length());
+            std::cout << "npos: " << (line[++npos]) << std::endl;
+            while(line[npos++] == ' '){
+                std::cout << "Es un espacio " << std::endl; //aqui estan los errores, hay que cargar value y no se porque no va
+            }
+            std::cout << "npos: " << line[npos] << std::endl;
+
+            //while(line[npos+1] != '-' && !std::isdigit(line[npos+1]) && line[npos] == '\n'){ //esto esta mal
+                //std::cout << "entra" << std::endl;
+              //  data.value = line.substr(npos, line.length());
+            //}
             //std::cout << "value: " << data.value << std::endl;
             //std::cout << "longitud de value: " << data.value.length() << std::endl;
             //std::cout << "longitud de year: " <<date.year.length() << std::endl;
@@ -148,13 +134,9 @@ void loadDate(std::string line, std::vector<t_data>& Date){
         }
         else{
             data.err =  "Error: bad input => " + data.line;
-            //std::cout << data.err << std::endl;
         }
     }
     printLine(data);
-   // else
-     //   std::cout << data.err << std::endl;
-    //std::cout << "stringDate: "<< stringDate << std::endl;
 }
 
 int main(int cont, char **argv){
