@@ -1,53 +1,16 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
+//#include <fstream>
+//#include <sstream>
 #include <cstdlib>
 #include <cctype>
-#include <algorithm>
-#include <vector>
+//#include <algorithm>
+//#include <vector>
 #include <typeinfo>
+#include "BitcoinExchange.hpp"
 
-struct t_data{
-    std::string line;
-    std::string year;
-    std::string month;
-    std::string day;
-    std::string value;
-    bool neg;
-    std::string err;
-};
 
-struct t_db{
-    std::string year;
-    std::string month;
-    std::string day;
-    std::string value;
-    std::string err;
-    std::string line;
-};
-
-template<typename T>
-void initData(T data){
-    data.line = "";
-    data.year = "";
-    data.month = "";
-    data.day = "";
-    data.value = "";
-    data.err = "";
-}
-
-template<>
-void initData(t_db data){
-    data.year = "";
-    data.month = "";
-    data.day = "";
-    data.value = "";
-    data.err = "";
-    data.line = "";
-}
 
 //imprime una linea
-void printLine(t_data& data, std::string value=""){
+/* void printLine(t_data& data, std::string value=""){
     if (data.err != ""){
         if (data.err == "Error: bad input")
             std::cout << data.err + " => " + data.line << std::endl;
@@ -58,27 +21,27 @@ void printLine(t_data& data, std::string value=""){
         data.line = data.year + "-" + data.month + "-" + data.day + " => " + data.value + " = " + value;
         std::cout << data.line << std::endl;
     }
-}
+} */
 
 //verifica si se puede abrir el archivo
-void openInputFile(const std::ifstream& file){
+/* void openInputFile(const std::ifstream& file){
     if (!file.is_open()) {
         std::cerr << "Error: could not open file." << std::endl;
         exit(EXIT_FAILURE);
     }
-}
+} */
 
-bool isNumeric(const std::string& cadena, int onlynum=0) {
+/* bool isNumeric(const std::string& cadena, int onlynum=0) {
     if(onlynum == 0)
         return cadena.find_first_not_of(".0123456789") == std::string::npos;
     return cadena.find_first_not_of("0123456789") == std::string::npos;
-}
+} */
 
-bool validateDataLen(std::string str, size_t len){
+/* bool validateDataLen(std::string str, size_t len){
     return str.length() != len;
-}
+} */
 
-bool isfloat(std::string str){
+/* bool isfloat(std::string str){
     std::string dotstring;
     int pos = 0;
     pos = str.find('.');
@@ -87,8 +50,9 @@ bool isfloat(std::string str){
         return isNumeric(dotstring,1);
     }
     return isNumeric(str);    
-    }
-template<typename T>
+    } */
+
+/* template<typename T>
 bool validateValue(T& data){
     if(*data.value.begin() == '-'){
         data.err = "Error: not a positive number.";
@@ -103,14 +67,14 @@ bool validateValue(T& data){
         return false;
     }
     return true;
-}
+} */
 
-bool leap_year(std::string year){
+/* bool leap_year(std::string year){
     return std::atoi(year.c_str()) % 4 == 0 && (std::atoi(year.c_str()) % 100 != 0 || std::atoi(year.c_str()) % 400 == 0);
-}
+} */
 
 //verifica el formato de los datos almacenados en la estructura t_data
-template<typename T>
+/* template<typename T>
 int validateStruct(T& data){
     if(validateDataLen(data.year, 4) || !isNumeric(data.year) || validateDataLen(data.month, 2) ||
     std::atoi(data.month.c_str()) > 12 || !isNumeric(data.month) || validateDataLen(data.day, 2) ||
@@ -136,19 +100,19 @@ int validateStruct(T& data){
         return false;
     }
     return true;
-}
+} */
 
-void eraseSpaces(std::string& line){
+/* void eraseSpaces(std::string& line){
     int pos = 0;
     while(line[pos] == ' '){pos++;}
         if(pos > 0){
             line.erase(0,pos);
         }
-}
+} */
 
 
 //carga los datos de la linea en un vector
-template<typename T>
+/* template<typename T>
 void loadDate(std::vector<T>& vData, std::string line){  //ver si podemos hacer que sirva para dos archivos
     T sdata;
     std::string str_extract;
@@ -175,9 +139,9 @@ void loadDate(std::vector<T>& vData, std::string line){  //ver si podemos hacer 
             sdata.err =  "Error: bad input";
     }
     vData.push_back(sdata);
-}
+} */
 
-template<>
+/* template<>
 void loadDate(std::vector<t_db>& vData, std::string line){
     t_db sdata;
     std::string str_extract;
@@ -198,9 +162,9 @@ void loadDate(std::vector<t_db>& vData, std::string line){
     else
         sdata.err = "Error: bad database line";
     vData.push_back(sdata);
-}
+} */
 
-template<typename data>
+/* template<typename data>
 void readInputFile(std::vector<data>& Data, std::string filename){
     std::string line;
     std::string firsLine;
@@ -226,10 +190,10 @@ std::string to_string(const T& n){
     else
         stm << n;
     return stm.str() ;
-}
+} */
 
 //buscando el valor de btc en la base de datos
-float getValue(const t_data inputData, std::vector<std::pair<std::string, double> > vPairdb){
+/* float getValue(const t_data inputData, std::vector<std::pair<std::string, double> > vPairdb){
     float value;
     std::string date;
     std::vector<std::pair<std::string, double> >::iterator it;
@@ -260,17 +224,17 @@ float getValue(const t_data inputData, std::vector<std::pair<std::string, double
     value = 0.0;
     return value;
 }
-
+ */
 
 int main(int cont, char **argv){
-    std::string inputFile = "";
-    std::string dbFile = "../cpp_09/data.csv";
-    std::string dbline;
-    std::vector<t_data> inputData;
-    std::vector<t_db> dataBase;
-    std::vector<std::pair<std::string, double> > vPairdb;
-    std::size_t size;
-    size_t it = 0;
+    //std::string inputFile = "";
+   // std::string dbFile = "../cpp_09/data.csv";
+    //std::string dbline;
+    //std::vector<t_data> inputData;
+    BitcoinExchange dataBase;
+    //std::vector<std::pair<std::string, double> > vPairdb;
+    //std::size_t size;
+    //size_t it = 0;
     
     if(cont != 2){
         std::cout << "Error: could not open file." << std::endl;
@@ -278,18 +242,20 @@ int main(int cont, char **argv){
     }
     else{
         //lectura, analisis y almacenamiento de la base de datos data.csv
-        readInputFile<t_db>(dataBase, dbFile);
-        it = 0;
-        size = dataBase.size();
-        std::string date;
+        //dataBase.readInputFile();
+        std::string inputFileName = argv[1];
+        dataBase.printPairdb();
+        //it = 0;
+        //size = dataBase.getDataBaseSize();
+       /*  std::string date;
         while(it < size){
-            date = dataBase[it].year + "-" + dataBase[it].month + "-" + dataBase[it].day;
-            vPairdb.push_back(std::make_pair(date,atof(dataBase[it].value.c_str())));
+            date = dataBase.getYear(it) + "-" + dataBase.getMonth(it) + "-" + dataBase.getDay(it);
+            dataBase.chargePairdb(date,it);
             it++;
-        }
+        } */
         
         //lectura, analisis y almacenamiento de los datos del archivo input.txt
-        it = 0;
+        /* it = 0;
         inputFile = argv[1];
         readInputFile<t_data>(inputData, inputFile);
         size = inputData.size();
@@ -299,7 +265,7 @@ int main(int cont, char **argv){
             printLine(inputData[it], value.str());
             value.str("");
             it++;
-        }
+        } */
     }
     return 0;
 }

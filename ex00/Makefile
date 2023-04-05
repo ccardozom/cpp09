@@ -5,8 +5,9 @@ CXXFLAGS = -std=c++98 -Wall -Wextra -Werror  # Especifica las opciones de compil
 TARGET = btc
 
 # Especifica los archivos que deseas compilar
-SRCS = main.cpp
+SRCS = main.cpp BitcoinExchange.cpp
 OBJS = $(SRCS:.cpp=.o)
+INCLUDE = .
 
 all: $(TARGET)
 
