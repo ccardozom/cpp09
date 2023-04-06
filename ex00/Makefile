@@ -1,5 +1,5 @@
 CXX = c++  # Especifica el compilador que deseas utilizar
-CXXFLAGS = -std=c++98 -Wall -Wextra -Werror  # Especifica las opciones de compilación
+CXXFLAGS = -std=c++98  -g -Wall -Wextra -Werror  # Especifica las opciones de compilación
 
 # Especifica el nombre del archivo ejecutable
 TARGET = btc
@@ -15,4 +15,9 @@ $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
 
 clean:
+	rm -f $(OBJS)
+
+fclean: clean
 	rm -f $(OBJS) $(TARGET)
+
+re: fclean all
