@@ -1,6 +1,6 @@
 #include "BitcoinExchange.hpp"
 
-//imprime una linea
+//imprime en pantalla la linea con o sin errores
  void printLine(Date data, std::string value=""){
     if (data.err != ""){
         if (data.err == "Error: bad input")
@@ -64,12 +64,13 @@ int main(int cont, char **argv){
     }
     else{
         BitcoinExchange dataBase;
-        Filedata inputFile(argv[1]);
+        BitcoinExchange dataBase2(dataBase);
+        Filedata inputFile(argv[1]); //falta comprobar forma canonica para la clase filedata
         size_t it = 0, size;
         size = inputFile.getInputDataSize();
         std::ostringstream value;
         while(it < size){
-            value << getValue(inputFile.getInputData(it), dataBase.getPairdb());
+            value << getValue(inputFile.getInputData(it), dataBase2.getPairdb());
             printLine(inputFile.getInputData(it), value.str());
             value.str("");
             it++;

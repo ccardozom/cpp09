@@ -9,6 +9,17 @@ BitcoinExchange::BitcoinExchange(){
 
 BitcoinExchange::~BitcoinExchange(){}
 
+BitcoinExchange& BitcoinExchange::operator=(BitcoinExchange& src){
+    this->_filePath = src._filePath;
+    this->_vDataBase = src._vDataBase;
+    this->_vPairdb = src._vPairdb;
+    return *this;
+}
+
+BitcoinExchange::BitcoinExchange(BitcoinExchange& copy){
+    *this = copy;
+}
+
 void BitcoinExchange::openInputFile(const std::ifstream& file){
     if (!file.is_open()) {
         std::cerr << "Error: could not open file." << std::endl;
@@ -178,6 +189,17 @@ Filedata::Filedata(std::string filePath){
 
 Filedata::~Filedata(){}
 
+Filedata &Filedata::operator=(Filedata& src){
+    this->_filePath = src._filePath;
+    this->_vInputFileData =src._vInputFileData;
+    return *this;
+}
+
+Filedata::Filedata(Filedata& copy){
+    *this = copy;
+}
+
+
 void Filedata::readInputFile(){
     std::string line;
     std::string firsLine;
@@ -205,17 +227,27 @@ void Filedata::loadDate(std::string line){
     Date date;
     std::string str_extract;
     int npos = 0;
+    int npos_aux;
 
     if (!line.empty()){
+        // std::cout << "line antes: " << line << std::endl;
         this->eraseSpaces(line);
-    // std::cout << "line: " << line << std::endl;
+        // std::cout << "line despues: " << line << std::endl;
         date.line = line;
+        npos = line.find(' ');
+        npos_aux = npos;
         npos = line.find('|');
+        while(npos_aux < npos){
+            if(!std::isspace(line[npos_aux++])){
+                npos = 0;
+                break;
+            }
+        }
         if(npos > 0){
             str_extract = line.substr(0,npos);
             std::stringstream ss(str_extract);
             std::getline(ss, date.year, '-');  
-            std::getline(ss, date.month, '-');
+            std::getline(ss, date.month, '-'); //por aqui buscar la falla de validacion Y-M-D basura | float
             std::getline(ss, date.day, ' ');
             while(line[++npos] == ' '){}
             date.value = line.substr(npos, line.length());
@@ -323,3 +355,17 @@ Date::Date(){
 }
 
 Date::~Date(){}
+
+Date &Date::operator=(const Date& src){
+    this->year = src.year;
+    this->month = src.month;
+    this->day = src.day;
+    this->err = src.err;
+    this->value = src.value;
+    this->line = src.line;
+    return *this;
+}
+
+Date::Date(const Date& src){
+    *this = src;
+}

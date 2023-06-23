@@ -6,11 +6,14 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <cctype>
 
 class Date{
     public:
         Date();
         ~Date();
+        Date(const Date& copy);
+        Date& operator=(const Date& src);
 
         std::string line;
         std::string year;
@@ -24,6 +27,8 @@ class Filedata{
     public:
         Filedata(std::string filePath);
         ~Filedata();
+        Filedata(Filedata& copy); //falta definirla
+        Filedata& operator=(Filedata& src); //falta definirla
         void readInputFile();
         void openInputFile(const std::ifstream& file);
         void loadDate(std::string line);
@@ -49,7 +54,8 @@ class BitcoinExchange{
     public:
         BitcoinExchange();
         ~BitcoinExchange();
-        //falta una sobrecarga de operador
+        BitcoinExchange& operator=(BitcoinExchange& src);
+        BitcoinExchange(BitcoinExchange& copy);
 
         void readInputFile();
         void openInputFile(const std::ifstream& file);
