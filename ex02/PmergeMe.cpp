@@ -30,9 +30,11 @@ bool PmergeMe::isDuplicate(int number, int *array, int size)
 
 bool PmergeMe::isNumber(char *arg)
 {
-    for (size_t i = 0; i < std::strlen(arg); ++i)
+    for (size_t i = 1; i < std::strlen(arg); ++i){
         if (!isdigit(arg[i]))
             return true;
+        // std::cout << "arg[i]: " << arg[i] << std::endl;
+    }
     return false;
 }
 
@@ -74,22 +76,30 @@ void PmergeMe::mergeInsertionSort(std::map<std::string, int>& array) {
     size_t n = array.size();
     if (n <= 1)
         return;
-
+    // std::cout << "n: " << n << std::endl;
     std::map<std::string, int> larger, smaller;
 
     // Step 1 and 2: Grouping the numbers into pairs and sorting each pair
     std::map<std::string, int>::iterator it = array.begin();
-    std::map<std::string, int>::iterator end = array.end();
 
-    for (size_t i = 0; i < n; i += 2) {
-        if (std::next(it) != end) {
+    // for (std::pair<std::string, int> it : array) {  //esto es solo para probar, no se puede usar para c++98 <------------------------ OJO
+    //     std::cout << it.first << " = " << it.second << std::endl;
+    // }
+    std::cout << "begin first: " << it->first << std::endl;
+    std::cout << "begin second: " << it->second << std::endl;
+
+    
+    for (size_t i = 1; i < n; i += 1) {
+        if (std::next(it) != array.end()) {
             std::map<std::string, int>::iterator next = std::next(it);
-            int maxVal = std::max(it->second, next->second);
-            int minVal = std::min(it->second, next->second);
-            larger[it->first] = maxVal;
-            smaller[next->first] = minVal;
-        } else {
-            larger[it->first] = it->second;
+            // std::cout << "it->second: " << it->second << " " << "next->second: " << next->second << std::endl;
+            int maxVal = std::max(it->second, next->second); // 5 9 -> 9
+            int minVal = std::min(it->second, next->second); // 5 9 -> 5
+            smaller[it->first] = minVal; // smaller[2] -> 5
+            larger[next->first] = maxVal; // larger[1] -> 9
+        } 
+        else {
+            smaller[it->first] = it->second; // larger[1] -> 5
         }
         ++it;
     }
@@ -101,7 +111,7 @@ void PmergeMe::mergeInsertionSort(std::map<std::string, int>& array) {
     int smallestLarger = larger.begin()->second;
     int correspondingSmaller = -1;
 
-    for (it = array.begin(); it != end; ++it) {
+    for (it = array.begin(); it != array.end(); ++it) {
         if (it->second == smallestLarger) {
             correspondingSmaller = it->second;
             break;

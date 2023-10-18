@@ -36,10 +36,16 @@ void BitcoinExchange::readInputFile(){
     this->openInputFile(file);
     
     std::getline(file, firsLine);
-
+    // int header = 0;
     while (std::getline(file, line)){
+        // std::string::iterator it = line.begin();
+        // if(header == 0)
+        //     while(it != line.end()){
+                
+        //     }
         if(!line.empty())
-            this->loadDate(line);            
+            this->loadDate(line);
+        // header = 1;            
     }
 }
 

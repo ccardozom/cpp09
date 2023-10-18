@@ -1,5 +1,5 @@
 CXX = c++  # Especifica el compilador que deseas utilizar
-CXXFLAGS = -std=c++98  -g -Wall -Wextra -Werror  # Especifica las opciones de compilación
+CXXFLAGS = -std=c++11  -g -Wall -Wextra -Werror  # Especifica las opciones de compilación
 
 # Especifica el nombre del archivo ejecutable
 TARGET = PmergeMe#nombre del ejecutable
