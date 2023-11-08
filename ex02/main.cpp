@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
     if (p.isValid(argc, argv))
         return 1;
 
-    std::deque<int> deque; // Cambiamos de std::vector a std::deque
+    std::deque<int> deque; 
     for (int i = 1; i < argc; ++i)
         deque.push_back(std::atoi(argv[i]));
 
@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
         std::cout << deque[i] << " ";
     std::cout << std::endl;
 
-    std::cout << "Time to process a range of " << deque.size() << " elements with std::deque : " << elapsedTime << " us" << std::endl;
+    std::cout << "Time to process a range of " << deque.size() << " elements with std::deque : " << elapsedTime << " microsegundos (us)" << std::endl;
 
     std::list<int> list;
     for (int i = 1; i < argc; ++i)
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     endTime = std::clock();
     elapsedTime = static_cast<double>((endTime - startTime) * 1000000 / CLOCKS_PER_SEC);
     
-    std::cout << "Time to process a range of " << list.size() << " elements with std::list : " << elapsedTime << " us" << std::endl; 
+    std::cout << "Time to process a range of " << list.size() << " elements with std::list : " << elapsedTime << " microsegundos (us)" << std::endl; 
 
     return 0;    
 }

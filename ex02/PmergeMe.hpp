@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-#include <deque> // Cambiamos a std::deque
+#include <deque> 
 #include <list>
 
 class PmergeMe
@@ -19,7 +19,6 @@ public:
     bool isNumber(char *arg);
     bool isValid(int argc, char **argv);
 
-    // Modificamos las funciones para usar std::deque en lugar de std::vector
     void mergeInsertionSort(std::deque<int> &array);
     void mergeInsertionSort(std::list<int> &array);
 };

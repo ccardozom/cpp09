@@ -58,12 +58,11 @@ bool PmergeMe::isValid(int argc, char **argv) {
     return false;
 }
 
-void PmergeMe::mergeInsertionSort(std::deque<int> &array) { // Cambiamos a std::deque
+void PmergeMe::mergeInsertionSort(std::deque<int> &array) { 
     size_t n = array.size();
     if (n <= 1)
         return;
-    std::deque<int> larger, smaller; // Cambiamos a std::deque
-    //step1 and 2: grouping the numbers into pairs and sorting each pair
+    std::deque<int> larger, smaller;
     for (size_t i = 0; i < n; i += 2) {
         if (i + 1 < n) {
             larger.push_back(std::max(array[i], array[i + 1]));
@@ -71,9 +70,7 @@ void PmergeMe::mergeInsertionSort(std::deque<int> &array) { // Cambiamos a std::
         } else
             larger.push_back(array[i]);
     }
-    //step3: recursively sort the larger elements
     mergeInsertionSort(larger);
-    //step4: find the corresponding smaller element for the smallest larger element
     int smallestLarger = larger[0];
     int correspondingSmaller = -1;
     for (size_t i = 0; i < n; i += 2) {
@@ -88,7 +85,7 @@ void PmergeMe::mergeInsertionSort(std::deque<int> &array) { // Cambiamos a std::
     array = larger;
     if (correspondingSmaller != -1)
         array.push_front(correspondingSmaller);
-    //step5: insert the remaining smaller elements
+    
     for (size_t i = 0; i < smaller.size(); ++i) {
         if (smaller[i] != correspondingSmaller) {
             std::deque<int>::iterator it = std::lower_bound(array.begin(), array.end(), smaller[i]);
@@ -97,14 +94,14 @@ void PmergeMe::mergeInsertionSort(std::deque<int> &array) { // Cambiamos a std::
     }
 }
 
-// Dejamos la función mergeInsertionSort(std::list<int> &array) sin cambios
+
 void PmergeMe::mergeInsertionSort(std::list<int> &array)
 {
     size_t n =array.size();
     if (n <= 1)
         return;
     std::list<int> larger, smaller;
-    //step1 and 2: grouping the numbers into pairs and sorting each pair
+
     std::list<int>::iterator it = array.begin();
     for (size_t i = 0; i < n; i += 2)
     {
@@ -118,9 +115,9 @@ void PmergeMe::mergeInsertionSort(std::list<int> &array)
         else
             larger.push_back(*it++);
     }
-    //step3: recursively sort the larger elements
+ 
     mergeInsertionSort(larger);
-    //step4: find the corresponding smaller element for the smallest larger element
+
     int smallestLarger = larger.front();
     int correspondingSmaller = -1;
     it = array.begin();
@@ -141,7 +138,6 @@ void PmergeMe::mergeInsertionSort(std::list<int> &array)
     array = larger;
     if (correspondingSmaller != -1)
         array.push_front(correspondingSmaller);
-    //step5: insert the remaining smaller elements
     for (std::list<int>::iterator it = smaller.begin(); it != smaller.end(); ++it)
     {
         if (*it != correspondingSmaller)
