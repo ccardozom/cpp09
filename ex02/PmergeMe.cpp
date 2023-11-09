@@ -48,10 +48,10 @@ bool PmergeMe::isValid(int argc, char **argv) {
             std::cout << "Error: Only positive integers can be process" << std::endl;
             return true;
         }
-        if (isDuplicate(number, numbers, size)) {
-            std::cout << "Error: Cannot process duplicate numbers" << std::endl;
-            return true;
-        }
+        // if (isDuplicate(number, numbers, size)) {
+        //     std::cout << "Error: Cannot process duplicate numbers" << std::endl;
+        //     return true;
+        // }
         numbers[i - 1] = static_cast<int>(number);
         ++size;
     }
@@ -63,6 +63,7 @@ void PmergeMe::mergeInsertionSort(std::deque<int> &array) {
     if (n <= 1)
         return;
     std::deque<int> larger, smaller;
+    //carga los valores del array por parejas y los separa en mayor y menor cada pareja
     for (size_t i = 0; i < n; i += 2) {
         if (i + 1 < n) {
             larger.push_back(std::max(array[i], array[i + 1]));
@@ -70,25 +71,35 @@ void PmergeMe::mergeInsertionSort(std::deque<int> &array) {
         } else
             larger.push_back(array[i]);
     }
+    
+    // se envia el array que tiene los mayores valores de la separación
     mergeInsertionSort(larger);
-    int smallestLarger = larger[0];
-    int correspondingSmaller = -1;
+
+    int firtstLargerArrayElement = larger[0];
+    int smallerNumOfCouple = -1;
+    
+    // si cumple la condición se busca el mínimo de cada pareja
     for (size_t i = 0; i < n; i += 2) {
         if (i + 1 < n) {
-            if (array[i] == smallestLarger || array[i + 1] == smallestLarger) {
-                correspondingSmaller = std::min(array[i], array[i + 1]);
+            if (array[i] == firtstLargerArrayElement || array[i + 1] == firtstLargerArrayElement) {
+                smallerNumOfCouple = std::min(array[i], array[i + 1]);
                 break;
             }
         }
     }
+
+
     array.clear();
     array = larger;
-    if (correspondingSmaller != -1)
-        array.push_front(correspondingSmaller);
     
+    if (smallerNumOfCouple != -1)
+        array.push_front(smallerNumOfCouple);
+        
     for (size_t i = 0; i < smaller.size(); ++i) {
-        if (smaller[i] != correspondingSmaller) {
+        if (smaller[i] != smallerNumOfCouple) {
+            //devuelve un iterador al primer elemento que no es menor a smaller[i]
             std::deque<int>::iterator it = std::lower_bound(array.begin(), array.end(), smaller[i]);
+            // inserta el elemento antes de la posicon que apunta el iterador
             array.insert(it, smaller[i]);
         }
     }
@@ -118,8 +129,8 @@ void PmergeMe::mergeInsertionSort(std::list<int> &array)
  
     mergeInsertionSort(larger);
 
-    int smallestLarger = larger.front();
-    int correspondingSmaller = -1;
+    int firtstLargerlistElement = larger.front();
+    int smallerNumOfCouple = -1;
     it = array.begin();
     for (size_t i = 0; i < n; i += 2)
     {
@@ -127,23 +138,26 @@ void PmergeMe::mergeInsertionSort(std::list<int> &array)
         {
             int first = *it++;
             int second = *it++;
-            if (first == smallestLarger || second == smallestLarger)
+            if (first == firtstLargerlistElement || second == firtstLargerlistElement)
             {
-                correspondingSmaller = std::min(first, second);
+                smallerNumOfCouple = std::min(first, second);
                 break;
             }
         }
     }
     array.clear();
     array = larger;
-    if (correspondingSmaller != -1)
-        array.push_front(correspondingSmaller);
+    if (smallerNumOfCouple != -1)
+        array.push_front(smallerNumOfCouple);
     for (std::list<int>::iterator it = smaller.begin(); it != smaller.end(); ++it)
     {
-        if (*it != correspondingSmaller)
+        if (*it != smallerNumOfCouple)
         {
+            // devuelve un iterador al primer elemento que no es menor a *it
             std::list<int>::iterator pos = std::lower_bound(array.begin(), array.end(), *it);
+            /// inserta el elemento antes de la posicon que apunta el iterador
             array.insert(pos, *it);
         }
     }
 }
+

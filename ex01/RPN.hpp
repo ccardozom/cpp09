@@ -1,23 +1,25 @@
 #ifndef RPN_HPP
-#define RPN_HPP
+# define RPN_HPP
 
 #include <stack>
-#include <iostream>
-#include <sstream>
 #include <cstdlib>
+#include <sstream>
+#include <iostream>
 
-class RPN{
+class RPN
+{
     public:
         RPN();
-        RPN(std::string str);
+        RPN(const RPN &rhs);
         ~RPN();
-        RPN(RPN& copy);
-        RPN &operator=(const RPN& rhs);
 
-        void makeOperation();
+        RPN &operator=(const RPN &rhs);
+
+        double calculate(char **argument);
+        void printstack();
+
     private:
-        std::stack<int> s;
-        std::string str;
+        std::stack<int> _pile;
 };
 
 #endif

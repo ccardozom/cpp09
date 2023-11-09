@@ -24,11 +24,16 @@ class Date{
 };
 
 class Filedata{
+    private:
+        std::string _filePath;
+        std::vector<Date> _inputFileData;
+    
     public:
         Filedata(std::string filePath);
         ~Filedata();
-        Filedata(Filedata& copy); //falta definirla
-        Filedata& operator=(Filedata& src); //falta definirla
+        Filedata(Filedata& copy);
+        Filedata& operator=(Filedata& src);
+         
         void readInputFile();
         void openInputFile(const std::ifstream& file);
         void loadDate(std::string line);
@@ -41,13 +46,9 @@ class Filedata{
         bool isfloat(std::string str);
         Date getInputData(size_t it);
 
-        //metodos para trabajar con _vInputFileData
+        //metodos para trabajar con _inputFileData
         size_t getInputDataSize();
 
-
-    private:
-        std::string _filePath;
-        std::vector<Date> _vInputFileData;
 };
 
 class BitcoinExchange{

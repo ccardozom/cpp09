@@ -64,13 +64,13 @@ int main(int cont, char **argv){
     }
     else{
         BitcoinExchange dataBase;
-        BitcoinExchange dataBase2(dataBase);
-        Filedata inputFile(argv[1]); //falta comprobar forma canonica para la clase filedata
+        // BitcoinExchange dataBase2(dataBase);
+        Filedata inputFile(argv[1]);
         size_t it = 0, size;
         size = inputFile.getInputDataSize();
         std::ostringstream value;
         while(it < size){
-            value << getValue(inputFile.getInputData(it), dataBase2.getPairdb());
+            value << getValue(inputFile.getInputData(it), dataBase.getPairdb());
             printLine(inputFile.getInputData(it), value.str());
             value.str("");
             it++;

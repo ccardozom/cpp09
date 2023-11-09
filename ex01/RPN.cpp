@@ -1,75 +1,78 @@
 #include "RPN.hpp"
 
-RPN::RPN(){
-    std::cout << "Se necesita un argumento para crear un objeto valido." << std::endl;
+RPN::RPN()
+{}
+
+RPN::RPN(const RPN &rhs)
+{
+    *this = rhs;
 }
 
-RPN::RPN(std::string str){
-    this->str = str;
-}
+RPN::~RPN()
+{}
 
-RPN::~RPN(){}
-
-RPN::RPN(RPN& copy){
-    this->str = copy.str;
-    this->s = copy.s;
-}
-
-RPN &RPN::operator=(const RPN& rhs){
-    if(this != &rhs){
-        this->str = rhs.str;
-        this->s = rhs.s;
-    }
+RPN & RPN::operator=(const RPN &rhs)
+{
+    this->_pile = rhs._pile;
     return *this;
 }
 
-void RPN::makeOperation(){
-    std::stringstream ss(str);
-    std::string elem;
-
-    while (std::getline(ss, elem, ' ')) { // Se obtiene cada elemento de la cadena separado por espacios
-        std::cout << "Size s: " << elem[0] << std::endl;
-        if (isdigit(elem[0])) { // Si el elemento es un dígito, se valida que sea un número entero del 0 al 9
-            int num = atoi(elem.c_str());
-            if (num > 9) { // Si el número no está en el rango correcto, se lanza una excepción
-                std::cerr << "Error: el número no puede ser mayor a 9." << std::endl;
-                exit(EXIT_FAILURE);
-            }
-            s.push(num);
+double RPN::calculate(char **argument)
+{
+    
+   
+    while (**argument != '\0')
+    {
+        char token = **argument;
+        
+        if (token > 48 && token < 58)
+        {
+            _pile.push(token - 48);
+            (*argument)++;
         }
-        else if(this->s.size() == 2){
-            if (elem == "+"){ // Si el elemento es una suma, sacamos los dos elementos superiores de la pila y los sumamos
-                int b = s.top(); s.pop();
-                int a = s.top(); s.pop();
-                s.push(a + b);
-            }
-            else if (elem == "-"){ // Si el elemento es una resta, realizamos la operación similarmente
-                int b = s.top(); s.pop();
-                int a = s.top(); s.pop();
-                s.push(a - b);
-            }
-            else if (elem == "*"){ // Si el elemento es una multiplicación, realizamos la operación similarmente
-                int b = s.top(); s.pop();
-                int a = s.top(); s.pop();
-                s.push(a * b);
-            }
-            else if (elem == "/") { // Si el elemento es una división, realizamos la operación similarmente
-                int b = s.top(); s.pop();
-                int a = s.top(); s.pop();
-                if(b <= 0){
-                    std::cerr << "El número no puede ser menor o igual a 0." << std::endl;
-                    exit(EXIT_FAILURE);
-                }
-                s.push(a / b);
-            }
+        else if (**argument == 32)
+            (*argument)++;
+        else if (**argument != 43 && **argument != 45 && **argument != 47 && **argument != 42){
+            throw "Error";
         }
-        /*else{
-            std::cerr << "Faltan números para realizar la operación." << std::endl;
-            exit(EXIT_FAILURE);
-        }*/
-        else { // Si el elemento no es un dígito ni una operación válida, se ignora
-            continue;
+        else if (**argument == 43 || **argument == 45 || **argument == 47 || **argument == 42)
+        {
+            int number1;
+            int number2;
+            int result;
+            if (_pile.size() < 2)
+                throw "Error";
+            number2 = _pile.top();
+            _pile.pop();
+            number1 = _pile.top();
+            _pile.pop();
+            if (**argument == 43)
+                result = number1 + number2;
+            if (**argument == 45)
+                result = number1 - number2;
+            if (**argument == 42){
+                result = number1 * number2;}
+            if (**argument == 47)
+            {
+                if (number2 == 0)
+                    throw "Error";
+                result = number1 / number2;
+            }
+            _pile.push(result);
+            (*argument)++;
         }
-        std::cout << s.top() << std::endl; // Imprimimos el resultado final de la operación
     }
+    if (_pile.size() != 1)
+        throw "Error";
+    return (_pile.top());
+}
+
+void RPN::printstack()
+{
+    while (!_pile.empty())
+    {
+        std::cout << _pile.top() << " ";
+        _pile.pop();
+    }
+    std::cout << std::endl;
 }
