@@ -21,7 +21,7 @@ Filedata::Filedata(Filedata& copy){
 }
 
 
-
+//lectura y carga del archivo input.txt
 void Filedata::readInputFile(){
     std::string line;
     std::string firsLine;
@@ -30,6 +30,7 @@ void Filedata::readInputFile(){
     //verifica si se puede leer el archivo de entrada
     this->openInputFile(file);
     
+    //verifica la cabecera del archivo input
     std::getline(file, firsLine);
     if (firsLine.compare("date | value")){
         std::cerr << "Error: file header" << std::endl;
@@ -37,6 +38,7 @@ void Filedata::readInputFile(){
     } 
     std::cout << firsLine << std::endl;
 
+    //se lee linea a linea para realizar el analisis
     while (std::getline(file, line)){
         if(!line.empty())
             this->loadDate(line);            
@@ -50,9 +52,10 @@ void Filedata::openInputFile(const std::ifstream& file){
     }
 }
 
+//crea el objeto date por cada linea del documento
 void Filedata::loadDate(std::string line){
     Date date;
-    std::string str_extract;
+    std::string linedate;
     int npos = 0;
     int npos_aux;
 
@@ -61,8 +64,7 @@ void Filedata::loadDate(std::string line){
         this->eraseSpaces(line);
         
         date.line = line;
-        npos = line.find(' ');
-        npos_aux = npos;
+        npos_aux = line.find(' ');
         npos = line.find('|');
         while(npos_aux < npos){
             if(!std::isspace(line[npos_aux++])){
@@ -71,8 +73,8 @@ void Filedata::loadDate(std::string line){
             }
         }
         if(npos > 0){
-            str_extract = line.substr(0,npos);
-            std::stringstream ss(str_extract);
+            linedate = line.substr(0,npos);
+            std::stringstream ss(linedate);
             std::getline(ss, date.year, '-');  
             std::getline(ss, date.month, '-');
             std::getline(ss, date.day, ' ');
@@ -184,8 +186,8 @@ BitcoinExchange::~BitcoinExchange(){}
 
 BitcoinExchange& BitcoinExchange::operator=(BitcoinExchange& src){
     this->_filePath = src._filePath;
-    this->_vDataBase = src._vDataBase;
-    this->_vPairdb = src._vPairdb;
+    this->DataBase = src.DataBase;
+    this->pairDateValue = src.pairDateValue;
     return *this;
 }
 
@@ -233,13 +235,57 @@ void BitcoinExchange::loadDate(std::string line){
         std::getline(ss, date.day, ',');
         while(line[++npos] == ' '){}
         date.value = line.substr(npos, line.length());
-        this->validateStruct(date);
+        // this->validateStruct(date);
     }
     else
         date.err = "Error: bad database line";
-    this->_vDataBase.push_back(date);
+    this->DataBase.push_back(date);
 }
 
+
+void BitcoinExchange::eraseSpaces(std::string& line){
+    int pos = 0;
+    while(line[pos] == ' '){pos++;}
+    if(pos > 0){
+        line.erase(0,pos);
+    }
+}
+
+/* Metodos para trabajar con DataBase */
+size_t BitcoinExchange::getDataBaseSize(){
+    return this->DataBase.size();
+}
+
+std::string BitcoinExchange::getYear(size_t it){
+    return this->DataBase[it].year;
+}
+
+std::string BitcoinExchange::getMonth(size_t it){
+    return this->DataBase[it].month;
+}
+
+std::string BitcoinExchange::getDay(size_t it){
+    return this->DataBase[it].day;
+}
+
+void BitcoinExchange::chargePairdb(){
+    size_t it = 0, size;
+    std::string date;
+
+    size = this->getDataBaseSize();
+    while(it < size){
+        date = this->getYear(it) + "-" + this->getMonth(it) + "-" + this->getDay(it);
+        this->pairDateValue.push_back(std::make_pair(date,atof(this->DataBase[it].value.c_str())));
+        it++;
+    }
+}
+
+std::vector<std::pair<std::string, double> > BitcoinExchange::getPairdb(){
+    return this->pairDateValue;
+}
+
+
+// esto despues de hacerlo me han dicho que no hacia falta :-(
 int BitcoinExchange::validateStruct(Date& date){
     if(validateDataLen(date.year, 4) || !isNumeric(date.year, 1) || validateDataLen(date.month, 2) ||
     std::atoi(date.month.c_str()) > 12 || !isNumeric(date.month, 1) || validateDataLen(date.day, 2) ||
@@ -304,56 +350,16 @@ bool BitcoinExchange::isfloat(std::string str){
     return isNumeric(str);    
 }
 
-void BitcoinExchange::eraseSpaces(std::string& line){
-    int pos = 0;
-    while(line[pos] == ' '){pos++;}
-    if(pos > 0){
-        line.erase(0,pos);
-    }
-}
-
-/* Metodos para trabajar con _vDataBase */
-size_t BitcoinExchange::getDataBaseSize(){
-    return this->_vDataBase.size();
-}
-
-std::string BitcoinExchange::getYear(size_t it){
-    return this->_vDataBase[it].year;
-}
-
-std::string BitcoinExchange::getMonth(size_t it){
-    return this->_vDataBase[it].month;
-}
-
-std::string BitcoinExchange::getDay(size_t it){
-    return this->_vDataBase[it].day;
-}
-
-void BitcoinExchange::chargePairdb(){
-    size_t it = 0, size;
-    std::string date;
-
-    size = this->getDataBaseSize();
-    while(it < size){
-        date = this->getYear(it) + "-" + this->getMonth(it) + "-" + this->getDay(it);
-        this->_vPairdb.push_back(std::make_pair(date,atof(this->_vDataBase[it].value.c_str())));
-        it++;
-    }
-}
-
 void BitcoinExchange::printPairdb(){
     size_t it = 0, size;
 
     size = this->getDataBaseSize();
     while(it < size){
-        std::cout << "Date: " << this->_vPairdb[it].first << " Value: " << this->_vPairdb[it].second << std::endl;
+        std::cout << "Date: " << this->pairDateValue[it].first << " Value: " << this->pairDateValue[it].second << std::endl;
         it++;
     }
 }
 
-std::vector<std::pair<std::string, double> > BitcoinExchange::getPairdb(){
-    return this->_vPairdb;
-}
 
 /*------- Implementación de los metodos de la clase Date --------*/
 Date::Date(){

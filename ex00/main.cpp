@@ -24,16 +24,19 @@ std::string int_to_string(int n){
 } 
 
 //buscando el valor de btc en la base de datos
-float getValue(const Date inputData, std::vector<std::pair<std::string, double> > vPairdb){
+float getValue(const Date inputData, std::vector<std::pair<std::string, double> > pairDateValue){
     float value;
     std::string yearMonthDay;
     std::vector<std::pair<std::string, double> >::iterator it;
+    //busca la fecha en la BD siempre que no tengamos errores
     if(inputData.err == ""){
         int day = atoi(inputData.day.c_str());
         int month = atoi(inputData.month.c_str());
         int year = atoi(inputData.year.c_str());
+
+        //buscamos la fecha exacta o la menor más proxima para hacer el calculo
         while(true && year > 2008){
-            it = vPairdb.begin();
+            it = pairDateValue.begin();
             if(day == 0){
                 day = 31;
                 month -= 1;
@@ -43,7 +46,7 @@ float getValue(const Date inputData, std::vector<std::pair<std::string, double> 
                 year -= 1;
             }
             yearMonthDay = int_to_string(year) + "-" + int_to_string(month) + "-" + int_to_string(day);
-            while(it != vPairdb.end()){
+            while(it != pairDateValue.end()){
                 if (it->first == yearMonthDay){
                     return it->second * atof(inputData.value.c_str());
                 }

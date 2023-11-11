@@ -62,30 +62,31 @@ class BitcoinExchange{
         void openInputFile(const std::ifstream& file);
         void loadDate(std::string line);
         void eraseSpaces(std::string& line);
+
+        //metodos para trabajar con DataBase
+        size_t getDataBaseSize();
+        std::string getYear(size_t it);
+        std::string getMonth(size_t it);
+        std::string getDay(size_t it);
+
+        //cargar el vector Pairdb con cada pareja de string + valor
+        void chargePairdb();
+
+        std::vector<std::pair<std::string, double> > getPairdb();
+        
+        // imprimir elementos del vector Pairdb
+        void printPairdb();
         int validateStruct(Date& date);
         bool validateDataLen(std::string str, size_t len);
         bool isNumeric(const std::string& cadena, int onlynum);
         bool leap_year(std::string year);
         bool validateValue(Date& data);
         bool isfloat(std::string str);
-
-        //metodos para trabajar con _vDataBase
-        size_t getDataBaseSize();
-        std::string getYear(size_t it);
-        std::string getMonth(size_t it);
-        std::string getDay(size_t it);
-
-        //cargar el vector vPairdb con cada pareja de string + valor
-        void chargePairdb();
-
-        //imprimir elementos del vector vPairdb
-        std::vector<std::pair<std::string, double> > getPairdb();
-        void printPairdb();
         
     private:
         std::string _filePath;
-        std::vector<Date> _vDataBase;
-        std::vector<std::pair<std::string, double> > _vPairdb;        
+        std::vector<Date> DataBase;
+        std::vector<std::pair<std::string, double> > pairDateValue;        
 };
 
 #endif
